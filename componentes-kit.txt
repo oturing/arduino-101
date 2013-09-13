@@ -1,0 +1,29 @@
+Controlador
+
+1	Placa compatível com Arduino UNO R3
+1	Cabo USB AB
+
+Componentes básicos
+
+1	Breadboard 830 pontos
+1	Placa wire-wrap 5x7 cm
+65	Jumpers macho/macho
+3	Cabos 3 vias Dupont
+20	Resistores 1kΩ
+6	Diodos 1N4006
+
+Saídas
+
+12	LEDs 5mm (2 verde, vermelho, amarelo, laranja, azul e branco)
+2	Relé 5v
+1	Display 7 segmentos 3 dígitos
+1	Micro-servo 9g SG90 TowerPro
+1	Buzzer contínuo
+
+Entradas
+
+2	Potenciômetro 100kΩ
+2	Sensores ópticos reflexivos
+1	Sensor de luminosidade (LDR 3mm)
+1	Sensor de temperatura LM35
+10	Push-button 6x6 mm
