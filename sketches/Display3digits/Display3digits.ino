@@ -72,9 +72,9 @@ void configurar_segmentos(int algarismo) {
 
 void loop() {
   // percorrer digitos a partir do mais significativo
-  // for (int d=qt_digitos-1; d>=0; d--) {
+  for (int d=qt_digitos_ativos-1; d>=0; d--) {
   // percorrer digitos a partir do menos significativo
-  for (int d=0; d<qt_digitos_ativos; d++) {
+  // for (int d=0; d<qt_digitos_ativos; d++) {
     // ativar digito: +5V no anodo
     digitalWrite(pinos_digitos[d], HIGH);
     int resto = (numero / (int)pow(10, d)) % 10;
