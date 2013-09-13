@@ -4,12 +4,12 @@
   Controle de um display de 7 segmentos com 3 digitos. 
 */
  
-int pinos_digitos[] = {13, 12, 9};
+int pinos_digitos[] = {4, 3, 2};
 int NUM_DIGITOS = 3;  
-//  segmentos datasheet  A  B   C   D   E   F  G
-int pinos_segmentos[] = {10, 11, 5,  7,  6, 4, 3};
+//  segmentos datasheet  A   B   C   D   E   F   G
+int pinos_segmentos[] = {8,  6, 10, 12, 13,  7,  9};
 int NUM_SEGMENTOS = 7;  
-int pino_ponto = 8; // dp: decimal point
+int pino_ponto = 11; // dp: decimal point
 int algarismos [][7] = {
   //       A  B  C  D  E  F  G
   /* 0 */ {1, 1, 1, 1, 1, 1, 0},
@@ -21,10 +21,15 @@ int algarismos [][7] = {
   /* 6 */ {1, 0, 1, 1, 1, 1, 1},
   /* 7 */ {1, 1, 1, 0, 0, 0, 0},
   /* 8 */ {1, 1, 1, 1, 1, 1, 1},
-  /* 9 */ {1, 1, 1, 0, 0, 1, 1},
+  /* 9 */ {1, 1, 1, 1, 0, 1, 1},
 };
 
 int NUM_ALGARISMOS = 10;
+int numero;
+int qt_digitos;
+unsigned long atraso = 500;
+unsigned long atualizacao;
+
 
 void setup() {                
   int i;
@@ -36,18 +41,29 @@ void setup() {
     pinMode(pinos_segmentos[i], OUTPUT);
     digitalWrite(pinos_segmentos[i], HIGH);
   }
+  atualizacao = millis();
+  numero = 0;
 }
 
-//     segmentos datasheet  A  B   C   D   E   F  G
-// int pinos_segmentos[] = {10, 11, 5,  7,  6, 4, 3};
-
 void loop() {
-  int digito = 0;
-  digitalWrite(pinos_digitos[digito], HIGH);
-  //for (int i=0; i<NUM_SEGMENTOS; i++) {
-  int seg = 8;
-  digitalWrite(seg, LOW);
-  delay(1000);
-  digitalWrite(seg, HIGH);
-  delay(1000);
+  qt_digitos = (int)(log(numero) / log(10)) + 1;
+  for (int d=qt_digitos-1; d>=0; d--) {
+    int resto = (numero / (int)pow(10, d)) % 10;
+    digitalWrite(pinos_digitos[d], HIGH);
+    for (int s=0; s<NUM_SEGMENTOS; s++) {
+      if (algarismos[resto][s]) {
+        digitalWrite(pinos_segmentos[s], LOW);
+      }
+    }
+    delay(3);
+    for (int s=0; s<NUM_SEGMENTOS; s++) {
+      digitalWrite(pinos_segmentos[s], HIGH);
+    } 
+    digitalWrite(pinos_digitos[d], LOW);
+  }
+  unsigned long agora = millis();
+  if ((agora - atualizacao) > atraso) {
+     numero = numero < (int)(pow(10, NUM_DIGITOS)-1) ? numero + 1 : 0;
+     atualizacao = agora;
+  }
 }
