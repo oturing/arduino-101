@@ -25,11 +25,10 @@ int algarismos [][7] = {
 };
 
 int NUM_ALGARISMOS = 10;
-int numero = 850; // numero a ser exibido
+int numero = 987; // numero a ser exibido
 int qt_digitos_ativos;   // quantidade de digitos em uso
-unsigned long INTERVALO = 100; // intervalo entre incrementos do numero
+unsigned long INTERVALO = 1000; // intervalo entre incrementos do numero
 unsigned long atualizacao; // momento da atualizacao mais recente
-
 
 void setup() {                
   int i;
@@ -45,20 +44,11 @@ void setup() {
     digitalWrite(pinos_segmentos[i], HIGH);
   }
   atualizacao = millis();
-}
-
-int contar_digitos(int n) {
-  // calcular quantidade de digitos no numero atual
-  int digitos = 0;
-  while (n > 0) {
-    digitos++;
-    n /= 10;
-  }
-  return digitos;
+  qt_digitos_ativos = contar_digitos(numero);
 }
 
 void configurar_segmentos(int algarismo) {
-  // usar algarismo -1 para desativar todos os segmentos
+  /* use algarismo -1 para desativar todos os segmentos */
   for (int s=0; s<NUM_SEGMENTOS; s++) {
     if (algarismo >= 0 && algarismos[algarismo][s]) {
       // ativar segmento: GND no catodo
@@ -70,14 +60,25 @@ void configurar_segmentos(int algarismo) {
   }
 }
 
+int contar_digitos(int n) {
+  /* calcular quantidade de digitos em n >= 0 */
+  int digitos = 0;
+  if (n == 0) return 1;
+  while (n > 0) {
+    digitos++;
+    n /= 10;
+  }
+  return digitos;
+}
+
 void loop() {
-  // percorrer digitos a partir do mais significativo
-  for (int d=qt_digitos_ativos-1; d>=0; d--) {
+  int meu_numero = numero;
   // percorrer digitos a partir do menos significativo
-  // for (int d=0; d<qt_digitos_ativos; d++) {
+  for (int d=0; d<qt_digitos_ativos; d++) {
+    int resto = meu_numero % 10;
+    meu_numero /= 10;
     // ativar digito: +5V no anodo
     digitalWrite(pinos_digitos[d], HIGH);
-    int resto = (numero / (int)pow(10, d)) % 10;
     configurar_segmentos(resto);
     // empiricamente verifiquei que este pequeno atraso 
     // maximiza o brilho e nao produz flicker visivel
@@ -92,7 +93,7 @@ void loop() {
   unsigned long agora = millis();
   int qt_digitos;
   if ((agora - atualizacao) > INTERVALO) {
-     numero = numero < (int)(pow(10, NUM_DIGITOS)-1) ? numero + 1 : 0;
+     numero = numero < (int)pow(10, NUM_DIGITOS) ? numero + 1 : 0;
      qt_digitos = contar_digitos(numero);
      if (qt_digitos != qt_digitos_ativos) {
        for (int d = 0; d < NUM_DIGITOS; d++) {
